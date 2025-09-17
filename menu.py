@@ -10,7 +10,7 @@ class Menu:
         contraseña_generada = False
         contador = 1
 
-        while salirprograma == False and opcion1 != 1:
+        while salirprograma == False and opcion1 == 0:
             print("//////////////////////////////")
             print(" BIENVENIDO AL MENÚ ")
             print("1. Digite sus datos personales para calcular IMC")
