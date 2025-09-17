@@ -22,18 +22,23 @@ class contraseñasegura:
         return cadenafinal
 
     def contar(self):
-        return len(self.contraseña_rand)
+        contador=0
+        for i in (self.contraseña_rand):
+            contador=contador+1
+        return contador
 
     def contar_letras(self):
-        return len(self.palabras_rand)
+        contador1=0
+        for i in (self.palabras_rand):
+            contador1=contador1+1
+        return contador1
 
-    def comprobarseguridad(self, contador, contadorletras):
-        nivel_num = 1 if contador >= 10 else 0
-        nivel_letras = 1 if contadorletras >= 10 else 0
-
-        if nivel_num == 1 and nivel_letras == 1:
+    def comprobarseguridad(self, contador, contador1):
+        if contador1>=10 and contador>=10:
             print(" Contraseña segura")
-        elif nivel_num == 1 or nivel_letras == 1:
+        elif contador1>=10 and contador<10:
+            print(" Contraseña aceptable")
+        elif contador>=10 and contador1<10:
             print(" Contraseña aceptable")
         else:
             print(" Contraseña insegura")
