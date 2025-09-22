@@ -1,87 +1,74 @@
-import random
-
-class PacMan:
-    def __init__(self, x=0, y=0):
-        self.x = x
-        self.y = y
-        self.puntos = 0
-
-    def mover(self, direccion, tablero):
-        movimientos = {
-            "arriba": (0, -1),
-            "abajo": (0, 1),
-            "izquierda": (-1, 0),
-            "derecha": (1, 0)
-        }
-
-        if direccion in movimientos:
-            dx, dy = movimientos[direccion]
-            nuevo_x = self.x + dx
-            nuevo_y = self.y + dy
-
-            if tablero.es_valido(nuevo_x, nuevo_y):
-                self.x = nuevo_x
-                self.y = nuevo_y
-                if tablero.comer_punto(self.x, self.y):
-                    self.puntos += 10
-
-    def estado(self):
-        return f"📍 Posición: ({self.x}, {self.y}) | ⭐ Puntos: {self.puntos}"
-
-
 class Tablero:
-    def __init__(self, ancho=7, alto=5):
-        self.ancho = ancho
-        self.alto = alto
-        self.mapa = [["." for _ in range(ancho)] for _ in range(alto)]
-        self.generar_puntos()
+    def __init__(self):
+        self.celdas = [" " for _ in range(9)]
 
-    def generar_puntos(self):
-        for _ in range(10):
-            x = random.randint(0, self.ancho - 1)
-            y = random.randint(0, self.alto - 1)
-            self.mapa[y][x] = "*"
-
-    def mostrar(self, pacman):
-        print("\n🟨 TABLERO 🟨")
-        for y in range(self.alto):
-            fila = ""
-            for x in range(self.ancho):
-                if pacman.x == x and pacman.y == y:
-                    fila += "P "
-                else:
-                    fila += self.mapa[y][x] + " "
+    def mostrar(self):
+        print("\n")
+        for i in range(3):
+            fila = " | ".join(self.celdas[i*3:(i+1)*3])
             print(fila)
-        print()
+            if i < 2:
+                print("--+---+--")
+        print("\n")
 
-    def es_valido(self, x, y):
-        return 0 <= x < self.ancho and 0 <= y < self.alto
-
-    def comer_punto(self, x, y):
-        if self.mapa[y][x] == "*":
-            self.mapa[y][x] = "."
+    def actualizar(self, posicion, simbolo):
+        if self.celdas[posicion] == " ":
+            self.celdas[posicion] = simbolo
             return True
         return False
 
+    def verificar_ganador(self, simbolo):
+        combinaciones = [
+            [0,1,2], [3,4,5], [6,7,8],  # filas
+            [0,3,6], [1,4,7], [2,5,8],  # columnas
+            [0,4,8], [2,4,6]            # diagonales
+        ]
+        for combo in combinaciones:
+            if all(self.celdas[i] == simbolo for i in combo):
+                return True
+        return False
 
-class Juego:
+    def lleno(self):
+        return all(c != " " for c in self.celdas)
+
+
+class JuegoTriki:
     def __init__(self):
         self.tablero = Tablero()
-        self.pacman = PacMan()
+        self.jugador_actual = "X"
 
-    def iniciar(self):
-        print("🎮 ¡Bienvenido al simulador de PacMan! 🎮")
+    def cambiar_turno(self):
+        self.jugador_actual = "O" if self.jugador_actual == "X" else "X"
+
+    def jugar(self):
+        print("¡Bienvenido al juego de Triki!")
+        self.tablero.mostrar()
+
         while True:
-            self.tablero.mostrar(self.pacman)
-            print(self.pacman.estado())
-            mov = input("Mover (arriba, abajo, izquierda, derecha, salir): ").lower()
-            if mov == "salir":
-                print("👋 ¡Gracias por jugar!")
-                break
-            self.pacman.mover(mov, self.tablero)
+            try:
+                posicion = int(input(f"Jugador {self.jugador_actual}, elige una posición (0-8): "))
+                if posicion < 0 or posicion > 8:
+                    print("Posición inválida. Intenta de nuevo.")
+                    continue
+            except ValueError:
+                print("Entrada inválida. Usa números del 0 al 8.")
+                continue
+
+            if self.tablero.actualizar(posicion, self.jugador_actual):
+                self.tablero.mostrar()
+                if self.tablero.verificar_ganador(self.jugador_actual):
+                    print(f"¡Jugador {self.jugador_actual} ha ganado!")
+                    break
+                elif self.tablero.lleno():
+                    print("¡Empate!")
+                    break
+                else:
+                    self.cambiar_turno()
+            else:
+                print("Esa posición ya está ocupada. Intenta otra.")
 
 
 # Ejecutar el juego
 if __name__ == "__main__":
-    juego = Juego()
-    juego.iniciar()
+    juego = JuegoTriki()
+    juego.jugar()
