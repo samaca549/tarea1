@@ -46,12 +46,13 @@ class JuegoTriki:
 
         while True:
             try:
-                posicion = int(input(f"Jugador {self.jugador_actual}, elige una posición (0-8): "))
+                posicion = int(input(f"Jugador {self.jugador_actual}, elige una posición (1-9): "))
+                posicion=posicion-1
                 if posicion < 0 or posicion > 8:
                     print("Posición inválida. Intenta de nuevo.")
                     continue
             except ValueError:
-                print("Entrada inválida. Usa números del 0 al 8.")
+                print("Entrada inválida. Usa números del 1 al 9.")
                 continue
 
             if self.tablero.actualizar(posicion, self.jugador_actual):
