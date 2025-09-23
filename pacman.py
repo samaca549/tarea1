@@ -1,33 +1,20 @@
-import random
+import random 
+class PacMan: 
+    def __init__(self): 
+        self.x = 0 
+        self.y = 0 
+        self.puntos = 0 
 
-class PacMan:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.puntos = 0
-
-    def mover(self, direccion, tablero):
-        if direccion == "w":
-            nuevo_x = self.x
-            nuevo_y = self.y - 1
-        elif direccion == "s":
-            nuevo_x = self.x
-            nuevo_y = self.y + 1
-        elif direccion == "a":
-            nuevo_x = self.x - 1
-            nuevo_y = self.y
-        elif direccion == "d":
-            nuevo_x = self.x + 1
-            nuevo_y = self.y
-        else:
-            nuevo_x = self.x
-            nuevo_y = self.y
-
-        if tablero.es_valido(nuevo_x, nuevo_y):
-            self.x = nuevo_x
-            self.y = nuevo_y
-            if tablero.hay_punto(self.x, self.y):
-                self.puntos += 10
+    def mover (self, direccion, tablero): 
+            self.x, self.y 
+            if direccion == "w": self.y -= 1 
+            elif direccion == "s": self.y += 1 
+            elif direccion == "a": self.x -= 1 
+            elif direccion == "d": self.x += 1 
+            if tablero.es_valido(self.x, self.y): 
+                self.x, self.y 
+            if tablero.hay_punto(self.x, self.y): 
+                self.puntos += 10 
                 tablero.quitar_punto(self.x, self.y)
 
     def mostrar_estado(self):
@@ -36,10 +23,8 @@ class PacMan:
 
 class Tablero:
     def __init__(self):
-        y=random.randint(5, 25)
-        x=random.randint(5, 25)
-        self.ancho = y
-        self.alto = x
+        self.ancho = random.randint(5, 25)
+        self.alto = random.randint(5, 25)
         self.puntos = []
         self.generar_puntos()
 
@@ -61,7 +46,6 @@ class Tablero:
                 else:
                     fila += ". "
             print(fila)
-        print()
 
     def es_valido(self, x, y):
         return 0 <= x < self.ancho and 0 <= y < self.alto
@@ -78,15 +62,26 @@ class Juego:
     def __init__(self):
         self.tablero = Tablero()
         self.pacman = PacMan()
+        self.nivel = 1
 
     def iniciar(self):
-        print("Bienvenido a PacMan")
+        print(" Bienvenido a PacMan ")
         while True:
+            print(f"\n Nivel {self.nivel}")
             self.tablero.mostrar(self.pacman)
             self.pacman.mostrar_estado()
+
+            if len(self.tablero.puntos) == 0:
+                print(" ¡Nivel completado! Generando nuevo tablero...")
+                self.tablero = Tablero()
+                self.nivel += 1
+                self.pacman.x = 0
+                self.pacman.y = 0
+                continue
+
             movimiento = input("Mover (w, s, a, d, salir): ").lower()
             if movimiento == "salir":
-                print("Fin del juego")
+                print(" Fin del juego")
                 break
             self.pacman.mover(movimiento, self.tablero)
 
